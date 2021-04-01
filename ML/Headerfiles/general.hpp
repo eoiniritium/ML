@@ -1,7 +1,6 @@
 #include <vector>
 #include <sstream>
-
-#include "io.hpp" //BAD! Must refactor but no❤️
+#include <iostream>
 
 void printmodel(std::vector<std::vector<std::vector<double>>> data){
     for(int layer = 0; layer < data.size(); layer++){
@@ -19,8 +18,24 @@ void printmodel(std::vector<std::vector<std::vector<double>>> data){
 }
 
 std::vector<double> splitdata(std::string file, std::string delim){ //Finish tomorrow
-    std::string data = read(file);
-    std::stringstream ss(data);
-    std::istream_iterator<std::string> begin(ss);
-    std::istream_iterator<std::string> end;
+    size_t pos = 0;
+    std::vector<double> out;
+
+    std::string token;
+    while ((pos = file.find(delim)) != std::string::npos) {
+        token = file.substr(0, pos);
+        out.push_back(std::stod(token));
+        file.erase(0, pos + delim.length());
+    }
+
+    return out;
 }
+
+void printvec(std::vector<double> data){
+    for(int i = 0; i < data.size(); i++){
+        std::cout << data[i] << ", ";
+    }
+}
+
+
+//Generate model

@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 
 std::string read(std::string file){
     std::ifstream f(file);
