@@ -38,6 +38,7 @@ void printvec(std::vector<double> data){
 }
 
 class m { // Model
+
 private:
     double rnd(double randomMIN, double randomMAX){
         double f = (double)rand()/RAND_MAX;
@@ -104,5 +105,12 @@ public:
 
         return out;
     }
+    
+    void populate(std::vector<std::vector<std::vector<double>>> &model){ // Pass vector refrence
+        using namespace std;
+
+        // model.at(i) = [data] | model[i] = [data]
+
         
+    }
 };
