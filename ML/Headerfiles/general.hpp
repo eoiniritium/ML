@@ -37,5 +37,72 @@ void printvec(std::vector<double> data){
     }
 }
 
+class m { // Model
+private:
+    double rnd(double randomMIN, double randomMAX){
+        double f = (double)rand()/RAND_MAX;
+        return randomMIN + f * (randomMAX - randomMIN);
+    }
 
-//Generate model
+public:
+    std::vector<double> input;
+ 
+    std::vector<std::vector<std::vector<double>>> modelTemplate(int inputdimension, int hiddenLayer, int hiddenLayerDimensions, int finalLayerDimension){
+        using namespace std; // So that I don't have to "std::" everwhere in functions - It is declared in the local scope and therefore will not disturb main.cpp
+        
+        vector<vector<vector<double>>> out; // Set length of Vector
+        
+        ////     First layer    ////
+        out.push_back(
+            vector<vector<double>> (
+                inputdimension + 1, // Layer length +1 for constant
+
+                vector<double>( // Default value
+                    hiddenLayerDimensions + 1, // Node length
+                    1 // Default value
+                )
+            )
+        );
+        
+        ////    Hidden layers   ////
+        for(int i = 1; i < hiddenLayer; i++){
+            out.push_back(
+                vector<vector<double>> (
+                    hiddenLayerDimensions, // Layer length
+
+                    vector<double> ( // Default Value
+                        hiddenLayerDimensions + 1, // Node Length
+                        1 // Default value
+                    )
+                )
+            );
+        }
+
+        //// Final hidden layer ////
+        out.push_back(
+            vector<vector<double>> (
+                hiddenLayerDimensions, // Hidden layer length
+
+                vector<double> ( // Default Value
+                    finalLayerDimension + 1, // Node length
+                    1 // Default value 
+                )
+            )
+        );
+        
+        ////    Output layer    ////
+        out.push_back(
+            vector<vector<double>> (
+                finalLayerDimension,
+
+                vector<double> (
+                    1,
+                    1
+                )
+            )
+        );
+
+        return out;
+    }
+        
+};
