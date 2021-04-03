@@ -5,22 +5,13 @@
 #include "Headerfiles\general.hpp"
 #include "Headerfiles\io.hpp"
 
-
 using namespace std;
 
 
-
-
-
-
-
-
-
-
-
-
 int main(){
-    printvec({0.3, 0.6, 1.2});
+    m m; // LOL
 
-    return 0;
+    vector<vector<vector<double>>> model = m.modelTemplate(3, 5, 3, 2);
+
+    printmodel(model);
 }
