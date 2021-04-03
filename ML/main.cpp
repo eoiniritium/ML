@@ -14,4 +14,8 @@ int main(){
     vector<vector<vector<double>>> model = m.modelTemplate(3, 5, 3, 2);
 
     printmodel(model);
+
+    m.weigh(model, 0.2, 0.6);
+
+    printmodel(model);
 }
