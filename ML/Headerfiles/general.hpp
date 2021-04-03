@@ -106,11 +106,16 @@ public:
         return out;
     }
     
-    void populate(std::vector<std::vector<std::vector<double>>> &model){ // Pass vector refrence
+    void weigh(std::vector<std::vector<std::vector<double>>> &model, double min, double max){ // Pass vector refrence // Add weights
         using namespace std;
 
         // model.at(i) = [data] | model[i] = [data]
 
-        
+        for(int top = 0; top < model.size() - 1; top++){
+            for(int nodes = 0; nodes < model[top].size(); nodes++){
+                for(int weights = 1; weights < model[top][nodes].size(); weights++){
+                    model.at(top).at(nodes).at(weights) = rnd(min, max);
+        }}} // End of 'for' loops
     }
 };
+// End of Class
