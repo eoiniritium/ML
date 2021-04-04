@@ -1,6 +1,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <numeric>
 
 void printmodel(std::vector<std::vector<std::vector<double>>> data){
     for(int layer = 0; layer < data.size(); layer++){
@@ -37,12 +38,25 @@ void printvec(std::vector<double> data){
     }
 }
 
-class m { // Model
 
+
+
+
+
+// Model
+class m {
 private:
     double rnd(double randomMIN, double randomMAX){
         double f = (double)rand()/RAND_MAX;
         return randomMIN + f * (randomMAX - randomMIN);
+    }
+
+    double sigmoid(double x){
+        return x / (1 + abs(x));
+    }
+
+    double transfer(std::vector<double> inputs){
+        return sigmoid(accumulate(inputs.begin(), inputs.end(), 0));
     }
 
 public:
@@ -121,6 +135,21 @@ public:
 
         for(int nodes = 1; nodes < model[0].size(); nodes++){
             model.at(0).at(nodes).at(0) = inputs[nodes - 1];
+        }
+    }
+
+    // Modify Model to be correct
+    void propagte(std::vector<std::vector<std::vector<double>>> &model) {
+        using namespace std;
+        // Model[0][0][0] = [which layer] [which node] [node value/connection]
+        for(int layer = 1; layer < model.size(); layer++){ // Every layer except for first layer
+            for(int node = 0; node < model[node].size(); node++){ // Every node in current layer
+                vector<double> values;
+                for(int prevnodes = 0; prevnodes < model[layer - 1].size(); prevnodes++){ // For everynode in prev layer
+                    values.push_back(model[layer-1][prevnodes][node + 1]); // Every node in last layers connection weight to the current node
+                }
+                model.at(layer).at(node).at(0) = transfer(values);
+            }
         }
     }
 };
