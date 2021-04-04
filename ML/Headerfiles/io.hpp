@@ -8,7 +8,7 @@ std::string read(std::string file){
     return output;
 }
 
-void output(std::string file, std::string data){
+void write(std::string file, std::string data){
     std::ofstream f(file);
 
     f << data;
