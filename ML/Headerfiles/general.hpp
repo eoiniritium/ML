@@ -1,6 +1,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <numeric>
 
 void printmodel(std::vector<std::vector<std::vector<double>>> data){
     for(int layer = 0; layer < data.size(); layer++){
@@ -37,15 +38,40 @@ void printvec(std::vector<double> data){
     }
 }
 
-class m { // Model
+void printdim(std::vector<std::vector<std::vector<double>>> input){
+    using namespace std;
 
+    
+}
+
+
+// Model
+class m {
 private:
     double rnd(double randomMIN, double randomMAX){
         double f = (double)rand()/RAND_MAX;
         return randomMIN + f * (randomMAX - randomMIN);
     }
 
+    double sigmoid(double x){
+        return x / (1 + abs(x));
+    }
+
+    double activation(std::vector<double> inValues){
+        double sum = 0;
+
+        for(int i = 0; i  < inValues.size(); i++){
+            sum += inValues[i];
+        }
+
+        return sigmoid(sum);
+    }
+
 public:
+
+    double minimum;
+    double maximum;
+
     std::vector<std::vector<std::vector<double>>> modelTemplate(int inputdimension, int hiddenLayer, int hiddenLayerDimensions, int finalLayerDimension){
         using namespace std; // So that I don't have to "std::" everwhere in functions - It is declared in the local scope and therefore will not disturb main.cpp
         
@@ -104,7 +130,7 @@ public:
         return out;
     }
     
-    void weigh(std::vector<std::vector<std::vector<double>>> &model, double min, double max){ // Pass vector refrence // Add weights
+    void weigh(std::vector<std::vector<std::vector<double>>> &model){ // Pass vector refrence // Add weights
         using namespace std;
 
         // model.at(i) = [data] | model[i] = [data]
@@ -112,7 +138,7 @@ public:
         for(int top = 0; top < model.size() - 1; top++){
             for(int nodes = 0; nodes < model[top].size(); nodes++){
                 for(int weights = 1; weights < model[top][nodes].size(); weights++){
-                    model.at(top).at(nodes).at(weights) = rnd(min, max);
+                    model.at(top).at(nodes).at(weights) = rnd(minimum, maximum);
         }}} // End of 'for' loops
     }
 
@@ -121,6 +147,25 @@ public:
 
         for(int nodes = 1; nodes < model[0].size(); nodes++){
             model.at(0).at(nodes).at(0) = inputs[nodes - 1];
+        }
+    }
+
+    // Modify Model to be correct
+    void propagte(std::vector<std::vector<std::vector<double>>> &model) {
+        using namespace std;
+        // Model[0][0][0] = [which layer] [which node] [node value/connection]
+        for(int layer = 1; layer < model.size(); layer++){ // For each layer in the model
+            for(int node = 0; node < model[layer].size(); node++){ // For each node in the previous layer
+                
+                // Connection values
+                vector<double> incomingvalues;
+                for(int prevnodes = 0; prevnodes < model[layer - 1].size(); prevnodes++){ // Size of the prev layer
+                    incomingvalues.push_back(model[layer - 1][prevnodes][node + 1]); // Prev layer, node in prev layer, current node (+1 because of the first index being value)
+                }
+
+                //Node Value
+                model.at(layer).at(node).at(0) = activation(incomingvalues);
+            }
         }
     }
 };
