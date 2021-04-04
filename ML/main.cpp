@@ -11,11 +11,17 @@ using namespace std;
 int main(){
     m m; // LOL
 
-    vector<vector<vector<double>>> model = m.modelTemplate(3, 5, 3, 2);
+    vector<double> data = splitdata(read("images\\pixelvalues\\0.txt"), ",");
 
-    printmodel(model);
+    // Model
+    vector<vector<vector<double>>> model = m.modelTemplate(data.size(), 2, 3, 2);
+    m.weigh(model, 0.2, 0.6); // Add weights to model
 
-    m.weigh(model, 0.2, 0.6);
+    // Calculations
+    vector<vector<vector<double>>> ran = model;
+    m.inputs(ran, data);
 
-    printmodel(model);
+    printmodel(ran);
+
+    return 0;
 }

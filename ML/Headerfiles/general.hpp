@@ -46,8 +46,6 @@ private:
     }
 
 public:
-    std::vector<double> input;
- 
     std::vector<std::vector<std::vector<double>>> modelTemplate(int inputdimension, int hiddenLayer, int hiddenLayerDimensions, int finalLayerDimension){
         using namespace std; // So that I don't have to "std::" everwhere in functions - It is declared in the local scope and therefore will not disturb main.cpp
         
@@ -116,6 +114,14 @@ public:
                 for(int weights = 1; weights < model[top][nodes].size(); weights++){
                     model.at(top).at(nodes).at(weights) = rnd(min, max);
         }}} // End of 'for' loops
+    }
+
+    void inputs(std::vector<std::vector<std::vector<double>>> &model, std::vector<double> inputs){
+        using namespace std;
+
+        for(int nodes = 1; nodes < model[0].size(); nodes++){
+            model.at(0).at(nodes).at(0) = inputs[nodes - 1];
+        }
     }
 };
 // End of Class
