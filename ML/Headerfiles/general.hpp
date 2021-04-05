@@ -3,7 +3,7 @@
 #include <iostream>
 #include <numeric>
 
-void printmodel(std::vector<std::vector<std::vector<double>>> data){
+void printmodel(std::vector<std::vector<std::vector<double>>> &data){ // Referance because faster
     for(int layer = 0; layer < data.size(); layer++){
         std::vector<std::vector<double>> layerdata = data[layer];
         for(int node = 0; node < layerdata.size(); node++){
@@ -32,9 +32,18 @@ std::vector<double> splitdata(std::string file, std::string delim){ //Finish tom
     return out;
 }
 
-void printvec(std::vector<double> data){
+void printvec(std::vector<double> &data){ // Referance for faster speed because it is around 16 Bits and the vector is greater
     for(int i = 0; i < data.size(); i++){
         std::cout << data[i] << ", ";
+    }
+}
+
+void printlayer(std::vector<std::vector<double>> &data){
+    for(int node = 0; node < data.size(); node++){
+        for(int weight = 0; weight < data[node].size(); weight++){
+            std::cout << data[weight][node] << ", ";
+        }
+        std::cout << std::endl;
     }
 }
 
@@ -71,6 +80,7 @@ public:
 
     double minimum;
     double maximum;
+    double threshold;
 
     std::vector<std::vector<std::vector<double>>> modelTemplate(int inputdimension, int hiddenLayer, int hiddenLayerDimensions, int finalLayerDimension){
         using namespace std; // So that I don't have to "std::" everwhere in functions - It is declared in the local scope and therefore will not disturb main.cpp
@@ -151,7 +161,7 @@ public:
     }
 
     // Modify Model to be correct
-    void propagte(std::vector<std::vector<std::vector<double>>> &model) {
+    void propagte(std::vector<std::vector<std::vector<double>>> &model){
         using namespace std;
         // Model[0][0][0] = [which layer] [which node] [node value/connection]
         for(int layer = 1; layer < model.size(); layer++){ // For each layer in the model
@@ -165,6 +175,29 @@ public:
 
                 //Node Value
                 model.at(layer).at(node).at(0) = activation(incomingvalues);
+            }
+        }
+    }
+
+    void mutate(std::vector<std::vector<std::vector<double>>> &model){
+        using namespace std;
+
+        for(int layers = 0; layers + 1 < model.size(); layers++){ // Each layer in the model
+
+            for(int nodes = 0; nodes < model[layers].size(); nodes++){ // Each node in the layer
+
+                for(int weight = 1; weight < model[layers][nodes].size(); weight++){ // Each weight in the node
+
+                    double mutateQ;
+
+                    mutateQ = rnd(0, 10);
+
+                    if(mutateQ > threshold){
+                        double newW = rnd(minimum, maximum);
+
+                        model.at(layers).at(nodes).at(weight) = newW;
+                    }
+                }
             }
         }
     }
