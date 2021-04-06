@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iostream>
 #include <numeric>
+#include <math.h>
+#include <fstream>
 
 void printmodel(std::vector<std::vector<std::vector<double>>> &data){ // Referance because faster
     for(int layer = 0; layer < data.size(); layer++){
@@ -170,7 +172,7 @@ public:
                 // Connection values
                 vector<double> incomingvalues;
                 for(int prevnodes = 0; prevnodes < model[layer - 1].size(); prevnodes++){ // Size of the prev layer
-                    incomingvalues.push_back(model[layer - 1][prevnodes][node + 1]); // Prev layer, node in prev layer, current node (+1 because of the first index being value)
+                    incomingvalues.push_back(model[layer - 1][prevnodes][node + 1] * model[layer-1][prevnodes][0]); // Prev layer, node in prev layer, current node (+1 because of the first index being value)
                 }
 
                 //Node Value
@@ -182,7 +184,7 @@ public:
     void mutate(std::vector<std::vector<std::vector<double>>> &model){
         using namespace std;
 
-        for(int layers = 0; layers + 1 < model.size(); layers++){ // Each layer in the model
+        for(int layers = 0; layers + 1 < model.size(); layers++){ // Each layer in the model but the last one
 
             for(int nodes = 0; nodes < model[layers].size(); nodes++){ // Each node in the layer
 
@@ -201,5 +203,47 @@ public:
             }
         }
     }
+
+    double near(std::vector<std::vector<std::vector<double>>> &model, std::vector<int> expected){
+        // Smallest is bests because less diff, sum
+        using namespace std;
+        
+        double out = 0;
+        for(int last = 0; model.back().size(); last++) {
+            out += pow(expected[last], 2) - pow(model[model.size()-1][last][0], 2);
+        }
+
+        return out;
+    }
+
+    void logmodel(std::vector<std::vector<std::vector<double>>> &model, std::string file){
+        using namespace std;
+
+        ofstream f(file); // File writter at location
+
+
+        string concat;
+        for(int layer = 0; layer < model.size(); layer++){
+
+            for(int node = 0; node < model[layer].size(); node++){
+                
+                concat += to_string(model[layer][node][0]) + "| ";
+                for(int weight = 1; weight < model[layer][node].size(); weight++){
+                    concat += to_string(model[layer][node][weight]);
+
+                    if(!(weight == model[layer][node].size() -2)){
+                        concat += ", ";
+                    }
+                }
+
+                concat += "\n";
+            }
+
+            concat += "\n\n";
+        }
+
+        f << concat;
+    }
 };
+
 // End of Class

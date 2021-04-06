@@ -15,20 +15,28 @@ int main(){
 
     m.threshold = 5;
 
-    vector<vector<vector<double>>> model1 = m.modelTemplate(3, 2, 3, 2);
+    vector<double> data = splitdata(read("images\\pixelvalues\\0.txt"), ",");
+    vector<vector<vector<double>>> model1 = m.modelTemplate(data.size(), 2, 3, 2);
     vector<vector<vector<double>>> model2; // Copy the template to see if mutation is working
 
     m.weigh(model1);
     model2 = model1;
-
-    printmodel(model1);
+    m.inputs(model1, data);
 
     m.mutate(model2);
-    printmodel(model2);
+    m.inputs(model2, data);
+
+    m.propagte(model1);
+    m.propagte(model2);
 
 
+    m.logmodel(model1, "model1.txt");
+    m.logmodel(model2, "model2.txt");
+    
+    //printmodel(model1);
+    //printmodel(model2);
     //Modifies Vector hidden
-    //vector<double> data = splitdata(read("images\\pixelvalues\\0.txt"), ",");
+    
     //// Model
     //vector<vector<vector<double>>> model = m.modelTemplate(data.size(), 2, 3, 2);
     //m.minimum = 0.2;
