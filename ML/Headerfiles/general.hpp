@@ -204,7 +204,7 @@ public:
         }
     }
 
-    double near(std::vector<std::vector<std::vector<double>>> &model, std::vector<int> expected){
+    double near(std::vector<std::vector<std::vector<double>>> &model, std::vector<double> expected){
         // Smallest is bests because less diff, sum
         using namespace std;
         
