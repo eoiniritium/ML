@@ -58,7 +58,7 @@ void printdim(std::vector<std::vector<std::vector<double>>> input){
 
 // Model
 class m {
-private:
+protected:
     double rnd(double randomMIN, double randomMAX){
         double f = (double)rand()/RAND_MAX;
         return randomMIN + f * (randomMAX - randomMIN);
@@ -244,6 +244,15 @@ public:
 
         f << concat;
     }
+};
+
+class learn : private m{
+
+public:
+    std::vector<std::vector<std::vector<std::vector<double>>>> train(vector<vector<vector<double>>> &originalModel, vector<vector<double>> &inputs, vector<vector<double>> &expected){
+
+    }
+
 };
 
 // End of Class
