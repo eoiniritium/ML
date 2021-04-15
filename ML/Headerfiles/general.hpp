@@ -1,9 +1,21 @@
+//Why so much?
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <numeric>
 #include <math.h>
 #include <fstream>
+
+void printexptected(std::vector<std::vector<double>> &data){ // Pass by referance
+    for(int i = 0; i < data.size(); i++){
+
+        for(int j = 0; j < data[i].size(); j++){ // Can't go over because integer overflow
+            std::cout << data[i][j] << ' ';
+        }
+
+        std::cout << std::endl;
+    }
+}
 
 void printmodel(std::vector<std::vector<std::vector<double>>> &data){ // Referance because faster
     for(int layer = 0; layer < data.size(); layer++){
@@ -20,18 +32,21 @@ void printmodel(std::vector<std::vector<std::vector<double>>> &data){ // Referan
     }
 }
 
-std::vector<double> splitdata(std::string file, std::string delim){ //Finish tomorrow
-    size_t pos = 0;
-    std::vector<double> out;
+std::vector<double> splitdata(std::string data, std::string delim){ ////////////
+    using namespace std;
+    vector<double> temp;
 
-    std::string token;
-    while ((pos = file.find(delim)) != std::string::npos) {
-        token = file.substr(0, pos);
-        out.push_back(std::stod(token));
-        file.erase(0, pos + delim.length());
+    stringstream ss(data);
+    istream_iterator<string> begin(ss);
+    istream_iterator<string> end;
+
+    vector<string> vstrings(begin, end);
+
+    for(int i = 0; i < vstrings.size(); i++){
+        cout << vstrings[i] << " ";
     }
 
-    return out;
+    return temp;
 }
 
 void printvec(std::vector<double> &data){ // Referance for faster speed because it is around 16 Bits and the vector is greater
@@ -58,7 +73,7 @@ void printdim(std::vector<std::vector<std::vector<double>>> input){
 
 // Model
 class m {
-protected:
+private:
     double rnd(double randomMIN, double randomMAX){
         double f = (double)rand()/RAND_MAX;
         return randomMIN + f * (randomMAX - randomMIN);
@@ -76,6 +91,20 @@ protected:
         }
 
         return sigmoid(sum);
+    }
+
+    std::string read(std::string file){
+        std::ifstream f(file);
+        std::string output;
+        
+        f >> output;
+        return output;
+    }
+
+    void write(std::string file, std::string data){
+        std::ofstream f(file);
+
+        f << data;
     }
 
 public:
@@ -244,15 +273,47 @@ public:
 
         f << concat;
     }
-};
 
-class learn : private m{
+    std::vector<std::vector<std::vector<double>>> load_images(std::string base_dir, int folderBottom, int folderTop, int imageBottom, int imageTop, std::string delim){ // Can use logmodel on this but it might be strange
+        using namespace std;
 
-public:
-    std::vector<std::vector<std::vector<std::vector<double>>>> train(vector<vector<vector<double>>> &originalModel, vector<vector<double>> &inputs, vector<vector<double>> &expected){
+        vector<vector<vector<double>>> data;
+        
+        for(int folder = folderBottom; folder <= folderTop; folder++){
+            vector<vector<double>> group_data;
 
+            for(int image = imageBottom; image <= imageBottom; image++){
+                string dir;
+                dir = base_dir + "\\" + to_string(folder) + "\\pixelvalues\\" + to_string(image) + ".txt"; //Read data from here
+                
+                string image_temp;
+                image_temp = read(dir);
+
+                group_data.push_back(splitdata(image_temp, delim));
+            }
+
+            data.push_back(group_data);
+        }
+
+        return data;
+    } // Working
+
+    std::vector<std::vector<double>> load_expected(std::string base_dir, int folderBottom, int folderTop, std::string delim){
+        using namespace std;
+
+        vector<vector<double>> data;
+
+        for(int i = folderBottom; i <= folderTop; i++){
+            string dir;
+            dir = base_dir + "\\" + to_string(i) + "\\expected.txt";
+            string tempdata = read(dir);
+
+            cout << tempdata << endl; //Debugging
+            vector<double> temp;
+            temp = splitdata(tempdata, delim);
+            data.push_back(temp);
+        }
+
+        return data;
     }
-
 };
-
-// End of Class
