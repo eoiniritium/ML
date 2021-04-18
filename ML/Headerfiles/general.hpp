@@ -32,21 +32,21 @@ void printmodel(std::vector<std::vector<std::vector<double>>> &data){ // Referan
     }
 }
 
-std::vector<double> splitdata(std::string data, std::string delim){ ////////////
+std::vector<double> splitdata(std::string data, char delim){ ////////////
     using namespace std;
-    vector<double> temp;
-
-    stringstream ss(data);
-    istream_iterator<string> begin(ss);
-    istream_iterator<string> end;
-
-    vector<string> vstrings(begin, end);
-
-    for(int i = 0; i < vstrings.size(); i++){
-        cout << vstrings[i] << " ";
+    vector<double> out;
+    
+    string temp = "";
+    for(int i = 0; i < data.length(); i++){
+        
+        if(data[i] != delim){
+            temp += data[i];
+        } else {
+            out.push_back(stod(temp));
+            temp = "";
+        }
     }
-
-    return temp;
+    return out;
 }
 
 void printvec(std::vector<double> &data){ // Referance for faster speed because it is around 16 Bits and the vector is greater
@@ -274,7 +274,7 @@ public:
         f << concat;
     }
 
-    std::vector<std::vector<std::vector<double>>> load_images(std::string base_dir, int folderBottom, int folderTop, int imageBottom, int imageTop, std::string delim){ // Can use logmodel on this but it might be strange
+    std::vector<std::vector<std::vector<double>>> load_images(std::string base_dir, int folderBottom, int folderTop, int imageBottom, int imageTop, char delim){ // Can use logmodel on this but it might be strange
         using namespace std;
 
         vector<vector<vector<double>>> data;
@@ -298,7 +298,7 @@ public:
         return data;
     } // Working
 
-    std::vector<std::vector<double>> load_expected(std::string base_dir, int folderBottom, int folderTop, std::string delim){
+    std::vector<std::vector<double>> load_expected(std::string base_dir, int folderBottom, int folderTop, char delim){
         using namespace std;
 
         vector<vector<double>> data;
